@@ -27,10 +27,21 @@ const getUser = async (req, res, next) => {
   }
 };
 
+const deleteUser = async (req, res, next) => {
+  try {
+    const uid = req.params.id;
+    await db.collection("Users").doc(uid).delete();
+    res.send("[Server] deleteUser: User deleted successfully");
+  } catch (err) {
+    res.status(400).send(err.message);
+  }
+};
+
 
 
   // Exporting functions
   module.exports = {
     createUser,
-    getUser
+    getUser,
+    deleteUser
 };
