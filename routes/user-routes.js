@@ -1,7 +1,8 @@
 const express = require('express');
 const { 
         // userController Functions here.
-        createUser
+        createUser,
+        getUser
 } =  require('../controllers/userController');
 
 const router = express.Router();
@@ -16,6 +17,7 @@ const router = express.Router();
 // router.post('/barber/:id/address', updateBarberAddress);
 
 router.post('/users/createUser', createUser);
+router.get('/users/getUser/:id', getUser);
 
 
 module.exports = {

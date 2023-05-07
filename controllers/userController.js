@@ -12,9 +12,25 @@ const createUser = async (req, res, next) => {
     }
   };
 
+const getUserHelper = async (uid) => {
+  const userData = await db.collection("Users").doc(uid).get();
+  return userData.data();
+};
+
+const getUser = async (req, res, next) => {
+  const uid = req.params.id;
+  try {
+    const userData = await getUserHelper(uid);
+    res.send(userData);
+  } catch (error) {
+    res.status(400).send(error.message);
+  }
+};
+
 
 
   // Exporting functions
   module.exports = {
-    createUser
+    createUser,
+    getUser
 };
