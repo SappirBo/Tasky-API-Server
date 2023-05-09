@@ -37,10 +37,21 @@ const deleteTask = async (req, res, next) => {
     }
   };
 
+  const updateTask = async(req,res, next) =>{
+    try{
+      const tid = req.body.id;
+      await db.collection("Users").doc(tid).update(req.body);
+      res.send("[Server] updateTask: Task Updated Successfully");
+    }catch(err){
+      res.status(400).send(err.message);
+    }
+  }
+
 
   // Exporting functions
   module.exports = {
     createTask,
     getTask,
-    deleteTask
+    deleteTask,
+    updateTask
 };
