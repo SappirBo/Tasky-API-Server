@@ -3,10 +3,10 @@ const { db } = require("../db");
 
 const createUser = async (req, res, next) => {
     try {
-      console.log("[Server] createUser: new user");
       const data = req.body;
-      await db.collection("Users").doc(data.userId).set(data);
-      res.send("User added successfully");
+      const docRef = await db.collection("Users").doc(data.userId).set(data);
+      const resMsg = "[SERVER] createUser: User added successfully"; 
+      res.send(resMsg);
     } catch (err) {
       res.status(400).send(err.message);
     }
@@ -31,7 +31,8 @@ const deleteUser = async (req, res, next) => {
   try {
     const uid = req.params.id;
     await db.collection("Users").doc(uid).delete();
-    res.send("[Server] deleteUser: User deleted successfully");
+    const resMsg = "[Server] deleteUser: User deleted successfully"; 
+    res.send(resMsg);
   } catch (err) {
     res.status(400).send(err.message);
   }
