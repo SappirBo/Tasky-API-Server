@@ -38,11 +38,22 @@ const deleteUser = async (req, res, next) => {
   }
 };
 
+const updateUser = async(req,res, next) =>{
+  try{
+    const uid = req.body.id;
+    await db.collection("Users").doc(uid).update(req.body);
+    res.send("[Server] updateUser: User Updated Successfully");
+  }catch(err){
+    res.status(400).send(err.message);
+  }
+}
+
 
 
   // Exporting functions
   module.exports = {
     createUser,
     getUser,
-    deleteUser
+    deleteUser,
+    updateUser
 };
