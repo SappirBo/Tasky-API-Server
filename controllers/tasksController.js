@@ -5,22 +5,25 @@ const createTask = async (req, res, next) => {
     try {
       console.log("[Server] createTast: Creating new task.");
       const data = req.body;
-      await db.collection("Tasks").doc(data.userId).set(data);
-      res.send("Task added successfully");
+      // Creating the new Task.
+      const ref = await db.collection("Tasks").add(data);
+      // Updating the task with the new Task ID.
+      await db.collection("Tasks").doc(ref.id).update({"task_id":ref.id });
+      res.send(`[Server] createTast: Task ${ref.id} added successfully`);
     } catch (err) {
       res.status(400).send(err.message);
     }
-  };
+};
 
-const getTasksHelper = async (taskId) => {
-  const userData = await db.collection("Tasks").doc(taskId).get();
-  return userData.data();
+const getTasksHelper = async (task_id) => {
+  const taskData = await db.collection("Tasks").doc(task_id).get();
+  return taskData.data();
 };
 
 const getTask = async (req, res, next) => {
-  const taskId = req.params.id; // Get the tasks ID.
+  const task_id = req.params.id; // Get the tasks ID.
   try {
-    const taskData = await getTasksHelper(uid);
+    const taskData = await getTasksHelper(task_id);
     res.send(taskData);
   } catch (error) {
     res.status(400).send(error.message);
@@ -31,21 +34,25 @@ const deleteTask = async (req, res, next) => {
     try {
       const taskId = req.params.id;
       await db.collection("Tasks").doc(taskId).delete();
-      res.send("[Server] deleteTask: Task deleted successfully");
+      res.send(`[Server] deleteTask: Task ${taskId} deleted successfully`);
     } catch (err) {
       res.status(400).send(err.message);
     }
-  };
+};
 
-  const updateTask = async(req,res, next) =>{
-    try{
-      const tid = req.body.id;
-      await db.collection("Users").doc(tid).update(req.body);
-      res.send("[Server] updateTask: Task Updated Successfully");
-    }catch(err){
-      res.status(400).send(err.message);
-    }
+const updateTask = async(req,res, next) =>{
+  try{
+    const data = req.body;
+    const task_id = data.task_id;
+    const docRef = await db.collection("Tasks").doc(task_id);
+    const updateRef = await docRef.update(data);
+    res.send(`[Server] updateTask: Task ${task_id} Updated Successfully`);
+  }catch(err){
+    res.status(400).send(err.message);
   }
+};
+
+
 
 
   // Exporting functions
