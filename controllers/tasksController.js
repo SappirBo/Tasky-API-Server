@@ -52,7 +52,16 @@ const updateTask = async(req,res, next) =>{
   }
 };
 
-
+/**
+ * Add:
+ * 1. get all tasks
+ * 2. get all tasks by user id
+ * 3. get all tasks by team id
+ * 4. delete all tasks.
+ * 5. delete all tasks by user id
+ * 6. delete all tasks by team id
+ * 
+ */
 
 
   // Exporting functions
