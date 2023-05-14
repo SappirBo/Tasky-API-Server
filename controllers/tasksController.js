@@ -3,7 +3,7 @@ const { db } = require("../db");
 
 const createTask = async (req, res, next) => {
     try {
-      console.log("[Server] createTast: Creating new task.");
+      // console.log("[Server] createTast: Creating new task.");
       const data = req.body;
       // Creating the new Task.
       const ref = await db.collection("Tasks").add(data);
