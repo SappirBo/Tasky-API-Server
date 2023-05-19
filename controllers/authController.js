@@ -1,43 +1,45 @@
 const { auth } = require("../db");
 
-/**
- * Authenticates a user by signing in with their email and password.
- * If successful, it returns the user's unique identifier (UID) as a JSON string.
- * If there is an error during authentication, an error message is sent as a response.
- */
+/*
+  Authenticate a user
+*/
 const authenticate = async (req, res, next) => {
-  let uid = (
-    await auth
-      .signInWithEmailAndPassword(req.body.userEmail, req.body.userPassword)
-      .catch((error) => {
-        res.send({ error: `error while signing in, ${error}` });
-      })
-    );
-  if(uid){
-    uid = uid.user.uid
-    await auth.signOut();
-    res.send(JSON.stringify(uid));
+
+  try {
+    const { token } = req.body;
+    console.log('new user try to login: ' + token);
+    const decodedToken = await admin.auth().verifyIdToken(token);
+    if (!decodedToken) {
+      throw new Error('Invalid token');
+    }
+    console.log('new user logged in: ' + decodedToken.uid);
+    res.status(200).json({ message: 'User logged in successfully' });
+  } catch (error) {
+    console.error(error);
+    res.status(401).json({ message: 'tasky server: Invalid credentials.' + error });
   }
+  
 };
 
 
-/**
- * Creates a new user account by signing up with the provided email and password.
- * If successful, it returns the newly created user's unique identifier (UID) as a JSON string.
- * If there is an error during the signup process, an error message is logged and sent as a response.
- */
+/*
+  Sign up a new user
+*/
 const signUp = async (req, res, next) => {
-  const email = req.body.Email;
-  const password = req.body.Password;
-  await auth.createUserWithEmailAndPassword(email, password).then((user) => {
-      userId = user.user.uid;
-    }).catch((error) => {
-      console.log(error.message);
-      res.send({ error: error.message });
-    });
-  const resMsg = "[Server] signUp: new User signed up: " + email + ", " + password; 
-  console.log(resMsg);
-  res.send(JSON.stringify(userId));
+  const { email, password } = req.body;
+    try {
+        console.log('new user try to signup: ' + email, password);
+      const userRecord = await admin.auth().createUser({
+        email,
+        password,
+      });
+      console.log('new user created: ' + userRecord.uid);
+      // send user token to client
+      res.status(201).json({ message: 'User created successfully' , uid: userRecord.uid});
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Something went wrong', error: error });
+    }
 };
 
 module.exports = { authenticate, signUp };
