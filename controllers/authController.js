@@ -1,5 +1,4 @@
 const { auth } = require("../db");
-
 /*
   Authenticate a user
 */
@@ -8,7 +7,7 @@ const authenticate = async (req, res, next) => {
   try {
     const { token } = req.body;
     console.log('new user try to login: ' + token);
-    const decodedToken = await admin.auth().verifyIdToken(token);
+    const decodedToken = await auth.verifyIdToken(token);
     if (!decodedToken) {
       throw new Error('Invalid token');
     }
@@ -29,7 +28,7 @@ const signUp = async (req, res, next) => {
   const { email, password } = req.body;
     try {
         console.log('new user try to signup: ' + email, password);
-      const userRecord = await admin.auth().createUser({
+      const userRecord = await auth.createUser({
         email,
         password,
       });
