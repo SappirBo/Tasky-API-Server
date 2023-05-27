@@ -1,18 +1,19 @@
 "use strict";
 const { db } = require("../db");
 
-const createUser = async (req, res, next) => {
+// should be called only in the server side for security reasons
+const createUser = async (user) => {
     try {
-      const data = req.body;
-      const uid = data.user_id;
-      //adding user to the db by the token number as id
-      const docRef = await db.collection("Users").doc(uid).set(data);
+      const uid = user.id;
+      //adding user to the db by the uid of firebase auth as id
+      const docRef = await db.collection("Users").doc(uid).set(user);
       // adding the token number as a argument
-      await db.collection("Users").doc(uid).update({"user_id": uid});
-      const resMsg = `[SERVER] createUser: User ${uid} added successfully`; 
-      res.send(resMsg);
+      await db.collection("Users").doc(uid).update({"uid": uid});
+      const retMsg = `[SERVER] createUser: User ${uid} added successfully`; 
+      console.log(retMsg);
+      return {succ : true, msg : retMsg}
     } catch (err) {
-      res.status(400).send(err.message);
+      return {succ : false, msg : err.message}
     }
 };
 
@@ -44,7 +45,7 @@ const deleteUser = async (req, res, next) => {
 
 const updateUser = async(req,res, next) =>{
   try{
-    const uid = req.body.user_id;
+    const uid = req.body.id;
     await db.collection("Users").doc(uid).update(req.body);
     res.send(`[Server] updateUser: User ${uid} Updated Successfully`);
   }catch(err){
