@@ -8,6 +8,7 @@ const taskRoutes = require('./routes/tasks-routes');
 const authRoutes = require('./routes/auth-routes');
 const teamRoutes = require('./routes/team-routes');
 const sprintRoutes = require('./routes/sprint-routes');
+const eventRoutes = require('./routes/event-routes');
 
 
 const app = express();
@@ -20,6 +21,7 @@ app.use('/api', userRoutes.routes,
                 taskRoutes.routes, 
                 authRoutes.routes, 
                 teamRoutes.routes, 
-                sprintRoutes.routes);
+                sprintRoutes.routes,
+                eventRoutes.routes);
 
 app.listen(config.port, ()=> console.log('App is listening on url http://' + config.host + ':' + config.port));
