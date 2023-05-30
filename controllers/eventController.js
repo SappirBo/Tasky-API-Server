@@ -49,6 +49,24 @@ const updateEvent = async(req,res, next) =>{
   }
 };
 
+const getEventsByUserId = async (req, res, next) => {
+  const user_id = req.params.id; // Get the user ID from the request parameters.
+  try {
+    const eventsSnapshot = await db.collection('Events').where('uid', '==', user_id).get();
+    const eventsData = [];
+    
+    eventsSnapshot.forEach((doc) => {
+      eventsData.push(doc.data());
+    });
+
+    res.send(eventsData);
+  } catch (error) {
+    res.status(400).send(error.message);
+  }
+};
+
+
+
 /**
  * Add:
  * 1. get all Events
@@ -63,5 +81,6 @@ const updateEvent = async(req,res, next) =>{
     createEvent,
     getEvent,
     deleteEvent,
-    updateEvent
+    updateEvent,
+    getEventsByUserId
 };
