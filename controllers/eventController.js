@@ -6,7 +6,11 @@ const createEvent = async (req, res, next) => {
       const data = req.body;
       const ref = await db.collection("Events").add(data);
       await db.collection("Events").doc(ref.id).update({"event_id":ref.id });
-      res.send(`[Server] createEvent: Event ${ref.id} added successfully`);
+      const resData = {
+        "message":`[Server] createEvent: Event ${ref.id} added successfully`,
+        "eventId": ref.id
+      }
+      res.send(resData);
     } catch (err) {
       res.status(400).send(err.message);
     }
@@ -50,15 +54,14 @@ const updateEvent = async(req,res, next) =>{
 };
 
 const getEventsByUserId = async (req, res, next) => {
-  const user_id = req.params.id; // Get the user ID from the request parameters.
+  const uid = req.params.id;
   try {
-    const eventsSnapshot = await db.collection('Events').where('uid', '==', user_id).get();
+    const eventsSnapshot = await db.collection('Events').where('uid', '==',uid ).get();
     const eventsData = [];
-    
+
     eventsSnapshot.forEach((doc) => {
       eventsData.push(doc.data());
     });
-
     res.send(eventsData);
   } catch (error) {
     res.status(400).send(error.message);
