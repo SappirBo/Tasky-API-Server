@@ -47,7 +47,10 @@ const updateEvent = async(req,res, next) =>{
     const event_id = data.event_id;
     const docRef = await db.collection("Events").doc(event_id);
     const updateRef = await docRef.update(data);
-    res.send(`[Server] updateEvent: Event ${event_id} Updated Successfully`);
+    res.send({
+      "message":`[Server] updateEvent: Event ${event_id} Updated Successfully`,
+      "event_id":event_id
+  });
   }catch(err){
     res.status(400).send(err.message);
   }
