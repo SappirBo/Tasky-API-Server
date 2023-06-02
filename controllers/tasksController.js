@@ -20,15 +20,7 @@ const getTasksHelper = async (task_id) => {
   return taskData.data();
 };
 
-const getTask = async (req, res, next) => {
-  const task_id = req.params.id; // Get the tasks ID.
-  try {
-    const taskData = await getTasksHelper(task_id);
-    res.send(taskData);
-  } catch (error) {
-    res.status(400).send(error.message);
-  }
-};
+
 
 const deleteTask = async (req, res, next) => {
     try {
@@ -52,6 +44,34 @@ const updateTask = async(req,res, next) =>{
   }
 };
 
+const getTask = async (req, res, next) => {
+  const task_id = req.params.id; // Get the tasks ID.
+  try {
+    const taskData = await getTasksHelper(task_id);
+    res.send(taskData);
+  } catch (error) {
+    res.status(400).send(error.message);
+  }
+};
+
+
+const  getTasksByUid = async (req, res, next) => {
+  const uid = req.params.id; // Get the tasks ID.
+  try {
+    const tasks = [];
+    const tasksData = await db.collection('Tasks').where('Dependencies', 'array-contains', { value: uid })
+    .get()
+    .then((querySnapshot) => {
+      querySnapshot.forEach((doc) => {
+        tasks.push({ id: doc.id, data: doc.data() });
+      });
+    })
+    res.send(tasks);
+  }catch (error) {
+    res.status(400).send(error.message);
+  }
+}
+
 /**
  * Add:
  * 1. get all tasks
@@ -69,5 +89,6 @@ const updateTask = async(req,res, next) =>{
     createTask,
     getTask,
     deleteTask,
-    updateTask
+    updateTask,
+    getTasksByUid
 };
